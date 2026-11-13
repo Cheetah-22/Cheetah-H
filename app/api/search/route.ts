@@ -9,6 +9,6 @@ export async function GET(req: Request) {
     return NextResponse.json({ tracks: await searchTracks(q) });
   } catch (e) {
     console.error(e);
-    return NextResponse.json({ error: "spotify" }, { status: 502 });
+    return NextResponse.json({ error: "spotify", detail: String((e as Error).message).slice(0, 300) }, { status: 502 });
   }
 }

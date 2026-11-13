@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     await addToPlaylist(uri);
   } catch (e) {
     console.error(e);
-    return NextResponse.json({ error: "spotify" }, { status: 502 });
+    return NextResponse.json({ error: "spotify", detail: String((e as Error).message).slice(0, 300) }, { status: 502 });
   }
 
   // Registro en Supabase (si falla, la canción ya quedó en la playlist igual).

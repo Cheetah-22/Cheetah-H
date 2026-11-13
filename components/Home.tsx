@@ -103,12 +103,12 @@ export default function Home() {
     setResults([]);
     try {
       const r = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-      if (!r.ok) throw new Error();
+      if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail ?? `HTTP ${r.status}`);
       const { tracks } = (await r.json()) as { tracks: Track[] };
       setResults(tracks);
       setStatus(tracks.length ? "" : t.noResults);
-    } catch {
-      setStatus(t.error);
+    } catch (err) {
+      setStatus(`${t.error} (${(err as Error).message})`);
     }
   }
 
@@ -120,15 +120,15 @@ export default function Home() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...tr, guestId: guestId.current, addedBy: name.trim() || null }),
       });
-      if (!r.ok) throw new Error();
+      if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail ?? `HTTP ${r.status}`);
       setAdded((a) => ({ ...a, [tr.uri]: "done" }));
       loadRecent();
-    } catch {
+    } catch (err) {
       setAdded((a) => {
         const { [tr.uri]: _, ...rest } = a;
         return rest;
       });
-      setStatus(t.error);
+      setStatus(`${t.error} (${(err as Error).message})`);
     }
   }
 
