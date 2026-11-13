@@ -132,53 +132,119 @@ export default function Home() {
     }
   }
 
+  const F = CONTENT.flight;
+  const passenger = name.trim();
+
   return (
     <main className="wrap">
       <header className="top">
-        <span className="brand">🐆 Cheetahs House</span>
+        <span className="brand">
+          <span className="star" aria-hidden="true">★</span> {t.airline}
+        </span>
         <button className="lang" type="button" onClick={toggleLang} aria-label="Change language">
           {lang === "en" ? "ES" : "EN"}
         </button>
       </header>
 
       {/* Boarding pass */}
-      <section className="pass">
-        <div className="pass-head">
-          <span className="badge">{t.boarding}</span>
-          <span className="plane">✈️</span>
+      <section className="ticket pass">
+        <div className="ticket-head">
+          <span className="airline">✈ {t.airline}</span>
+          <span className="doc">{t.boardingPass}</span>
         </div>
-        <h1>{t.welcome}</h1>
-        <p className="muted">{t.thrilled}</p>
-        {name.trim() && <p className="hello">{t.hello(name.trim())}</p>}
-        <input
-          className="input"
-          type="text"
-          autoComplete="given-name"
-          maxLength={40}
-          placeholder={t.namePlaceholder}
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          onBlur={saveName}
-        />
+        <div className="stripes" aria-hidden="true" />
+
+        <div className="ticket-body">
+          <div className="status-row">
+            <span className="badge">● {t.boarding}</span>
+            <span className="ontime">{t.status}</span>
+          </div>
+
+          <div className="route">
+            <div>
+              <span className="label">{t.from}</span>
+              <span className="code">{F.fromCode}</span>
+              <span className="city">🇺🇸 {t.fromCity}</span>
+            </div>
+            <div className="path" aria-hidden="true">
+              <span className="dash" />
+              <span className="jet">✈</span>
+              <span className="dash" />
+            </div>
+            <div className="right">
+              <span className="label">{t.to}</span>
+              <span className="code">{F.toCode}</span>
+              <span className="city">🇨🇱 {t.toCity}</span>
+            </div>
+          </div>
+
+          <h1>{t.welcome}</h1>
+          <p className="muted">{t.thrilled}</p>
+
+          <label className="field passenger">
+            <span className="label">{t.passenger}</span>
+            <input
+              type="text"
+              autoComplete="given-name"
+              maxLength={40}
+              placeholder={t.namePlaceholder}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onBlur={saveName}
+            />
+          </label>
+
+          <div className="grid">
+            <div className="field"><span className="label">{t.flightLabel}</span><strong>{F.number}</strong></div>
+            <div className="field"><span className="label">{t.gate}</span><strong>{t.gateValue}</strong></div>
+            <div className="field"><span className="label">{t.boardingTime}</span><strong className="red">{t.boardingValue}</strong></div>
+            <div className="field"><span className="label">{t.seat}</span><strong>{t.seatValue}</strong></div>
+            <div className="field"><span className="label">{t.classLabel}</span><strong>{t.classValue}</strong></div>
+          </div>
+        </div>
+
         <div className="perf" aria-hidden="true" />
-        <h2>{t.rulesTitle}</h2>
-        <ul className="rules">
+
+        <div className="stub">
+          <div className="barcode" aria-hidden="true" />
+          <span className="stub-text">
+            {passenger ? passenger.toUpperCase() : "GUEST"} · {F.number} · {F.fromCode} → {F.toCode}
+          </span>
+        </div>
+      </section>
+
+      {/* Flight information */}
+      <section className="ticket">
+        <div className="section-head">
+          <h2>🛫 {t.infoTitle}</h2>
+        </div>
+        {t.info.map((p) => (
+          <p className="info" key={p}>{p}</p>
+        ))}
+      </section>
+
+      {/* House rules */}
+      <section className="ticket">
+        <div className="section-head">
+          <h2>{t.rulesTitle}</h2>
+          <span className="tag red">{t.rulesTag}</span>
+        </div>
+        <ol className="rules">
           {t.rules.map((r) => (
             <li key={r}>{r}</li>
           ))}
-        </ul>
+        </ol>
       </section>
 
       {/* Wi‑Fi */}
-      <section className="card">
-        <h2>📶 {t.wifiTitle}</h2>
-        <div className="row">
-          <span className="label">{t.network}</span>
-          <strong>{CONTENT.wifi.ssid}</strong>
+      <section className="ticket">
+        <div className="section-head">
+          <h2>📶 {t.wifiTitle}</h2>
         </div>
-        <div className="row">
-          <span className="label">{t.password}</span>
-          <strong className="mono">{CONTENT.wifi.password}</strong>
+        <p className="info">{t.wifiInfo}</p>
+        <div className="grid two">
+          <div className="field"><span className="label">{t.network}</span><strong>{CONTENT.wifi.ssid}</strong></div>
+          <div className="field"><span className="label">{t.password}</span><strong className="mono">{CONTENT.wifi.password}</strong></div>
         </div>
         {os !== "android" && (
           <div className="os">
@@ -197,8 +263,11 @@ export default function Home() {
       </section>
 
       {/* Spotify */}
-      <section className="card">
-        <h2>🎶 {t.musicTitle}</h2>
+      <section className="ticket">
+        <div className="section-head">
+          <h2>🎶 {t.musicTitle}</h2>
+        </div>
+        <p className="info">{t.musicInfo}</p>
         <form className="search" onSubmit={search}>
           <input
             className="input"
@@ -220,7 +289,7 @@ export default function Home() {
                 <span className="title">{tr.name}</span>
                 <span className="artist">{tr.artists}</span>
               </span>
-              <button className="btn" type="button" disabled={!!added[tr.uri]} onClick={() => add(tr)}>
+              <button className="btn add" type="button" disabled={!!added[tr.uri]} onClick={() => add(tr)}>
                 {added[tr.uri] === "done" ? t.added : t.add}
               </button>
             </li>
@@ -252,6 +321,10 @@ export default function Home() {
           {t.openSpotify}
         </a>
       </section>
+
+      <footer className="footer">
+        <span className="star" aria-hidden="true">★</span> {t.footer}
+      </footer>
     </main>
   );
 }
