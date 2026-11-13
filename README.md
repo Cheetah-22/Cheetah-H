@@ -98,7 +98,7 @@ Detalles a tener en cuenta:
 **Lo que encontramos:**
 - **Spotify Jam** (función nativa) deja que varias personas agreguen canciones a lo que suena, pero **no tiene API** para integrarlo en una app propia.
 - La **Web API de Spotify** permite agregar canciones a una playlist con `POST /v1/playlists/{id}/items`. Desde 2026 el endpoint antiguo `/tracks` ya **no funciona** en modo desarrollo.
-- Desde febrero 2026, una app en “modo desarrollo” **requiere que el dueño tenga Spotify Premium** y permite como máximo **5 usuarios** autorizados. Hay desarrolladores que reportan errores 403 en endpoints de escritura, así que hay que probarlo temprano.
+- Desde febrero 2026, una app en “modo desarrollo” **requiere que el dueño tenga Spotify Premium** y permite como máximo **5 usuarios** autorizados. ✅ **Tenemos cuenta Premium**, así que cumplimos el requisito. Hay desarrolladores que reportan errores 403 en endpoints de escritura, así que hay que probarlo temprano.
 
 **Propuesta (💡, a confirmar):** que **solo nuestra cuenta** se conecte a Spotify. El invitado busca una canción en la app y nuestro servidor la agrega con nuestra cuenta. Así:
 - El invitado **no necesita** tener ni iniciar sesión en Spotify.
@@ -146,7 +146,7 @@ Lección clave: **información desactualizada es peor que no tenerla** (ej. una 
 - [ ] ¿Les parece bien la combinación: tag con link + tag Wi‑Fi para Android + QR de respaldo?
 
 **Spotify**
-- [ ] ¿Tenemos Spotify **Premium**? (necesario para la API)
+- [x] ¿Tenemos Spotify **Premium**? → ✅ Sí
 - [ ] ¿Una playlist fija o una por evento?
 - [ ] ¿Agregar directo (A) o con aprobación (B)?
 
