@@ -105,10 +105,11 @@ Detalles a tener en cuenta:
 - Quedamos dentro del límite de 5 usuarios del modo desarrollo (el único usuario somos nosotros).
 - Se puede guardar **quién agregó cada canción** (“🎶 agregada por Ana”).
 
-Formas de agregar a evaluar:
-- **A. Directo:** la canción entra de inmediato a la playlist.
-- **B. Con aprobación:** queda en una lista de sugerencias que nosotros aprobamos.
-- **C. Respaldo sin código:** link a una playlist colaborativa o a un Jam, por si la API falla.
+**Decisiones:**
+- ✅ **Una playlist fija** de la casa: todas las visitas suman canciones a la misma.
+- ✅ **Agregar directo:** la canción entra de inmediato, sin aprobación nuestra.
+- 💡 Respaldo sin código: link a la playlist (o a un Jam) por si la API falla.
+- 💡 Como entra directo, se podría evitar duplicados (no agregar una canción que ya está) y limitar cuántas canciones agrega cada invitado. Por confirmar.
 
 ## 8. Guía de la casa (💡 secciones típicas)
 
@@ -147,8 +148,9 @@ Lección clave: **información desactualizada es peor que no tenerla** (ej. una 
 
 **Spotify**
 - [x] ¿Tenemos Spotify **Premium**? → ✅ Sí
-- [ ] ¿Una playlist fija o una por evento?
-- [ ] ¿Agregar directo (A) o con aprobación (B)?
+- [x] ¿Una playlist fija o una por evento? → ✅ Una playlist fija
+- [x] ¿Agregar directo o con aprobación? → ✅ Directo
+- [ ] ¿Evitar canciones duplicadas? ¿Límite de canciones por invitado?
 
 **Plataforma**
 - [ ] ¿Quiénes administran? (¿una persona, la pareja, la familia?)
@@ -169,7 +171,7 @@ Lección clave: **información desactualizada es peor que no tenerla** (ej. una 
 | Fase | Contenido |
 |---|---|
 | **0 – Definición** | Responder preguntas abiertas. Elegir stack y hosting. |
-| **1 – MVP “Now boarding”** | Web app abierta por tag NFC/QR · Pantalla de bienvenida + reglas · Wi‑Fi (perfil iPhone, tag Android, QR y copiar clave) · Botón a la playlist (opción C). |
+| **1 – MVP “Now boarding”** | Web app abierta por tag NFC/QR · Pantalla de bienvenida + reglas · Wi‑Fi (perfil iPhone, tag Android, QR y copiar clave) · Botón a la playlist (respaldo). |
 | **2 – Música y registro** | Buscar y agregar canciones con la API de Spotify · Registro de invitados · Panel para que el anfitrión edite el contenido. |
 | **3 – Guía y contraseñas** | Guía de la casa · Contraseñas solo para invitados aprobados, con vencimiento. |
 | **4 – Control** | Integración smart home con acceso limitado y temporal. |
