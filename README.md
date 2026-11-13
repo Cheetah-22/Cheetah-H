@@ -1,8 +1,8 @@
 # 🐆 Cheetahs House
 
-App para que los invitados que visitan nuestra casa se **registren** y tengan en un solo lugar todo lo que necesitan para **conectarse** y **sentirse en casa**, sin tener que preguntarnos cada vez.
+Web app para que los invitados que visitan nuestra casa tengan en un solo lugar todo lo que necesitan para **conectarse** y **sentirse en casa**, sin tener que preguntarnos cada vez.
 
-> **Estado:** idea / definición. Este README separa lo que ya está decidido (✅) de lo que todavía falta decidir. Las secciones marcadas con 💡 son ideas sacadas de investigación online, **no** decisiones tomadas.
+> **Estado:** definición casi lista para construir la primera versión. Este README separa lo que ya está decidido (✅) de lo que todavía falta decidir. Las secciones marcadas con 💡 son ideas sacadas de investigación online, **no** decisiones tomadas.
 
 ---
 
@@ -12,7 +12,7 @@ Cuando tenemos invitados, siempre nos preguntan:
 
 - ¿Cuál es la **clave del Wi‑Fi**?
 - ¿Puedes **agregar una canción** a la playlist de Spotify?
-- ¿Qué **cosas debería saber** de la casa? (dónde están las cosas, contraseñas, cómo controlar cosas)
+- ¿Qué **cosas debería saber** de la casa?
 
 Responder esto una y otra vez interrumpe y la información se termina repitiendo (o se pierde).
 
@@ -20,25 +20,30 @@ Responder esto una y otra vez interrumpe y la información se termina repitiendo
 
 | Usuario | Qué necesita |
 |---|---|
-| **Invitado** (persona que visita la casa) | Registrarse, conectarse al Wi‑Fi, saber dónde están las cosas, ver contraseñas que le compartimos, controlar cosas de la casa, aportar música. |
-| **Anfitrión** (nosotros) | Cargar y mantener actualizada la información, decidir qué ve cada invitado. *(Rol implícito — ver preguntas abiertas.)* |
+| **Invitado** (cualquier visita: horas o días) | Conectarse al Wi‑Fi, conocer las reglas de la casa, agregar canciones a la playlist. |
+| **Administrador** (solo el dueño de la casa) | Mantener el contenido actualizado. ✅ Lo hace editando este repositorio (con ayuda de Claude Code), **no** con un panel de administración dentro de la app. |
 
-## 3. Alcance confirmado
+## 3. Alcance
 
-1. ✅ **Entrada por NFC** – tenemos tags NFC; el invitado acerca su teléfono y se abre el link de la app al instante.
-2. ✅ **Wi‑Fi en un toque** – el invitado se conecta haciendo click en un link, y la red queda guardada en su teléfono.
-3. ✅ **Spotify** – el invitado agrega sus canciones a nuestra playlist.
-4. ✅ **Bienvenida + reglas de la casa** – pantalla de bienvenida con el texto de la sección 4.
-5. **Registro de invitados** – el invitado se registra al llegar *(datos por definir)*.
-6. **Guía de la casa** – dónde están las cosas y lo que hay que saber.
-7. **Contraseñas** – acceso a las claves que decidamos compartir.
-8. **Control** – el invitado puede controlar algo de la casa *(qué, exactamente, está por definir)*.
+### ✅ Primera versión
+1. **Un solo tag NFC en la entrada de la casa** → abre la app. Desde la app se hace todo.
+2. **Bienvenida “Now boarding” + reglas de la casa** (sección 4).
+3. **Nombre opcional** – el invitado puede escribir su nombre; no es obligatorio y no bloquea nada.
+4. **Wi‑Fi** – conectarse y dejar la red guardada en el teléfono.
+5. **Spotify** – agregar canciones a la playlist de la casa.
+6. **Idiomas** – inglés por defecto, con opción de cambiar a español.
+
+### ⏸️ Fuera por ahora
+- Guía de “dónde están las cosas”.
+- Otras contraseñas (solo se comparte la del Wi‑Fi).
+- Aprobación de invitados (el acceso es libre para quien escanea el tag).
+- Control de la casa (pendiente de definir, sección 9).
 
 ---
 
 ## 4. ✅ Pantalla de bienvenida (contenido)
 
-Texto que verá el invitado al abrir la app:
+Texto principal (inglés):
 
 > **Now boarding**
 >
@@ -56,141 +61,126 @@ Texto que verá el invitado al abrir la app:
 >
 > 💃 Dancing is required
 
-💡 *Idea de diseño:* “Now boarding” y los aviones a escala dan pie a un tema de **aeropuerto / tarjeta de embarque** (“boarding pass” con el nombre del invitado, “gate” = Wi‑Fi, “in‑flight entertainment” = playlist). Por confirmar.
+La versión en español se tiene que traducir. 💡 Propuesta (para revisar):
 
-💡 La regla 🎶 puede ser un **botón directo** a “Agregar canción” (sección 7).
+> **Embarque inmediato** · ¡Bienvenidos a nuestra casa! 🏠 · Nos encanta tenerlos aquí.
+> **Reglas de la casa:** 👟 Fuera zapatos, arriba la buena onda · ✈️ Felicita a Cami por sus aviones a escala · 🎶 Comparte tu canción favorita para la playlist · 💃 Bailar es obligatorio
+
+💡 *Ideas de diseño (por confirmar):*
+- Tema de **aeropuerto / tarjeta de embarque** (“Now boarding”, aviones de Cami).
+- La regla 🎶 como **botón directo** a “Agregar canción”.
+- Botón **EN / ES** visible arriba.
 
 ---
 
-## 5. Entrada por NFC
+## 5. ✅ Entrada por NFC
 
-**Lo confirmado:** los tags abren el link de la app en el navegador del teléfono, sin instalar nada.
+- **Un solo tag**, ubicado en la **entrada de la casa**, grabado con el **link de la app**.
+- Un tag con link funciona en Android y en iPhone. En iPhone, los modelos XS o más nuevos lo leen sin abrir ninguna app; los iPhone más antiguos necesitan una app lectora de NFC.
+- Recomendado: **bloquear el tag contra escritura** después de grabarlo, para que nadie lo pueda regrabar con otro link.
+- ❌ Decidido: **no** se usa tag Wi‑Fi separado ni QR de respaldo.
 
-**Lo que encontramos:**
-- Un tag con un **link (URL)** funciona en Android y en iPhone. En iPhone, los modelos XS o más nuevos lo leen sin abrir ninguna app; los iPhone más antiguos necesitan una app lectora de NFC.
-- Conviene **bloquear el tag contra escritura** después de grabarlo, para que nadie lo pueda regrabar con otro link.
-- 💡 Poner también un **código QR impreso** junto al tag, como respaldo para teléfonos sin NFC o con NFC apagado.
-- 💡 Usar varios tags en distintos lugares, cada uno abriendo una sección distinta (ej. `/wifi` junto al router, `/music` junto al parlante, `/` en la entrada).
+## 6. ✅ Wi‑Fi
 
-## 6. Wi‑Fi en un toque
+- **Red:** `Cheetah` (la red principal de la casa; no hay red de invitados separada).
+- **Clave:** ⚠️ **no se escribe en este repositorio** (ver “Seguridad” abajo). Se guarda como variable secreta en el hosting.
+- **No se pide registro** para ver el Wi‑Fi.
 
-**Objetivo:** el invitado hace click en un link → queda conectado y con la red guardada en su teléfono.
+**Cómo se conecta el invitado desde la app** (no existe una forma estándar de que un link conecte al Wi‑Fi, así que depende del teléfono):
 
-**Limitación importante:** no existe una forma estándar en la web para que un link conecte un teléfono al Wi‑Fi. Cada sistema tiene su propio camino:
-
-| Teléfono | Cómo lograrlo | Experiencia |
+| Teléfono | Qué hace la app | Experiencia |
 |---|---|---|
-| **iPhone** | El link descarga un **perfil de configuración Wi‑Fi** (`.mobileconfig`) | Hay que abrirlo en **Safari** (otros navegadores no lo instalan). Safari pide permiso → el invitado va a *Ajustes → Perfil descargado* → *Instalar*. La red queda guardada. Son unos pocos toques, no uno solo. |
-| **Android** | Un **tag NFC con un registro Wi‑Fi** (no con un link) | Acercar el teléfono y se conecta directo; Android lo soporta de forma nativa. |
-| **Ambos (respaldo)** | **QR de Wi‑Fi** (`WIFI:T:WPA;S:<red>;P:<clave>;;`) + botón “copiar clave” en la app | La cámara del teléfono reconoce el QR y ofrece conectarse. |
+| **iPhone** | Botón “Connect to Wi‑Fi” que descarga un **perfil de configuración Wi‑Fi** (`.mobileconfig`) | Se abre en **Safari** (otros navegadores no lo instalan). Safari pide permiso → *Ajustes → Perfil descargado* → *Instalar*. La red queda guardada. Son unos pocos toques. |
+| **Android** | Muestra la red y un botón **“Copy password”** | El invitado abre los ajustes de Wi‑Fi, elige `Cheetah` y pega la clave. Android no permite conectarse desde un link web. |
 
 Detalles a tener en cuenta:
-- En iPhone, **un tag Wi‑Fi no conecta** (iOS no soporta ese tipo de registro). Si un mismo tag lleva varios registros, iOS solo usa el primero compatible → en la práctica es más simple tener **un tag con link (para todos)** y **otro tag Wi‑Fi (para Android)**.
+- La app detecta si es iPhone o Android y muestra la opción que corresponde.
 - Un perfil `.mobileconfig` sin firma digital muestra el aviso “No verificado”. Se puede firmar para que se vea más confiable.
-- En iOS 16 o más nuevo, el perfil funciona con redes WPA2/WPA3, no con WPA (el más antiguo).
-- La clave viaja en texto plano en el perfil, el QR y el tag → recomendable una **red de invitados separada**. Si se cambia la clave, la app debe regenerar el perfil y el QR (y hay que regrabar el tag Wi‑Fi).
-- Los caracteres `; , : \` en la red o clave deben escaparse con `\` en el QR.
+- En iOS 16 o más nuevo, el perfil funciona con redes WPA2/WPA3, no con WPA (el más antiguo). *Confirmar el tipo de seguridad de la red `Cheetah`.*
+- Si se cambia la clave, solo se actualiza la variable secreta; la app genera el perfil con la clave nueva.
 
-## 7. Agregar canciones a Spotify
+### ⚠️ Seguridad de la clave
+- Este repositorio es **público**: cualquiera en internet puede leerlo. Por eso la clave **no** va en el README ni en el código.
+- La app tampoco tiene registro obligatorio: **cualquier persona que acceda al link** puede ver la clave. 💡 Para reducir el riesgo, el link puede incluir un código secreto que solo está grabado en el tag (ej. `…/?k=<código>`), de modo que la clave solo se muestre a quien escaneó el tag en la casa.
+- 💡 Como la red de invitados es la misma red principal, a futuro conviene evaluar una red de invitados separada.
 
-**Objetivo:** el invitado agrega sus canciones a nuestra playlist.
-
-**Lo que encontramos:**
-- **Spotify Jam** (función nativa) deja que varias personas agreguen canciones a lo que suena, pero **no tiene API** para integrarlo en una app propia.
-- La **Web API de Spotify** permite agregar canciones a una playlist con `POST /v1/playlists/{id}/items`. Desde 2026 el endpoint antiguo `/tracks` ya **no funciona** en modo desarrollo.
-- Desde febrero 2026, una app en “modo desarrollo” **requiere que el dueño tenga Spotify Premium** y permite como máximo **5 usuarios** autorizados. ✅ **Tenemos cuenta Premium**, así que cumplimos el requisito. Hay desarrolladores que reportan errores 403 en endpoints de escritura, así que hay que probarlo temprano.
-
-**Propuesta (💡, a confirmar):** que **solo nuestra cuenta** se conecte a Spotify. El invitado busca una canción en la app y nuestro servidor la agrega con nuestra cuenta. Así:
-- El invitado **no necesita** tener ni iniciar sesión en Spotify.
-- Quedamos dentro del límite de 5 usuarios del modo desarrollo (el único usuario somos nosotros).
-- Se puede guardar **quién agregó cada canción** (“🎶 agregada por Ana”).
+## 7. ✅ Agregar canciones a Spotify
 
 **Decisiones:**
-- ✅ **Una playlist fija** de la casa: todas las visitas suman canciones a la misma.
-- ✅ **Agregar directo:** la canción entra de inmediato, sin aprobación nuestra.
-- 💡 Respaldo sin código: link a la playlist (o a un Jam) por si la API falla.
-- 💡 Como entra directo, se podría evitar duplicados (no agregar una canción que ya está) y limitar cuántas canciones agrega cada invitado. Por confirmar.
+- ✅ Tenemos **Spotify Premium** (requisito de la API).
+- ✅ **Una playlist fija** de la casa.
+- ✅ Las canciones **entran directo**, sin aprobación.
+- ✅ **Sin límite** de canciones por invitado; los duplicados dan igual.
+- ✅ Si el invitado escribió su nombre, se puede mostrar quién agregó cada canción (“🎶 added by Ana”).
 
-## 8. Guía de la casa (💡 secciones típicas)
+**Cómo funciona:**
+- Solo **nuestra cuenta** se conecta a Spotify. El invitado busca una canción en la app y nuestro servidor la agrega a la playlist con nuestra cuenta. El invitado **no necesita** tener Spotify.
+- Endpoint: `POST /v1/playlists/{id}/items` (desde 2026 el endpoint antiguo `/tracks` ya no funciona en modo desarrollo).
+- En “modo desarrollo” Spotify permite máximo 5 usuarios autorizados; nos basta con 1 (nosotros).
+- Hay desarrolladores que reportan errores 403 en endpoints de escritura → **probar esto primero**.
+- 💡 Respaldo: link para abrir la playlist en Spotify si la API falla.
 
-En guías digitales para invitados lo más común es: Wi‑Fi y llegada (según una fuente, lo más consultado → ponerlo primero), reglas de la casa, cómo usar electrodomésticos / TV / clima, basura y reciclaje, estacionamiento, contactos de emergencia y recomendaciones locales.
+## 8. Nombre del invitado
 
-Lección clave: **información desactualizada es peor que no tenerla** (ej. una clave de Wi‑Fi antigua). Editar el contenido tiene que ser fácil para el anfitrión.
+- ✅ Solo **nombre**, **opcional**. No hay aprobación ni cuentas.
+- 💡 El nombre se puede guardar en el propio teléfono del invitado (navegador), sin base de datos, y usarse para saludarlo (“Welcome, Ana!”) y para firmar sus canciones.
 
-## 9. Control de la casa (💡)
+## 9. Control de la casa (pendiente)
 
-- Si usamos **Home Assistant**: no trae “modo invitado” completo; se suele crear un usuario restringido con su propio dashboard, o usar complementos que generan **links de acceso temporal** solo para ciertos dispositivos.
+Todavía no definido. Notas de la investigación:
+- Si usamos **Home Assistant**: no trae “modo invitado” completo; se suele crear un usuario restringido o usar complementos con **links de acceso temporal** solo para ciertos dispositivos.
 - **Google Home** también tiene opciones de acceso para invitados.
-- ⚠️ Exponer **solo** lo necesario (ej. luces del living, TV) y con acceso que **expire**.
-
-## 10. Contraseñas y datos sensibles
-
-- Mostrarlas solo a invitados registrados/aprobados.
-- 💡 Que tengan **vencimiento** (cuando el invitado se va, pierde acceso).
-- Guardarlas cifradas, nunca en el código del repositorio (incluye la clave Wi‑Fi y el token de Spotify).
+- ⚠️ Exponer **solo** lo necesario y con acceso que expire.
 
 ---
 
-## 11. ❓ Preguntas abiertas
+## 10. ❓ Preguntas abiertas
 
-**Invitados y registro**
-- [ ] ¿Qué datos pide el registro? (nombre, teléfono, email, fechas de visita…) ¿Es obligatorio antes de ver el Wi‑Fi?
-- [ ] ¿Cada invitado debe ser **aprobado** por nosotros o el acceso es automático?
-- [ ] ¿Las visitas son de horas (cena, fiesta) o también de días (alojamiento)?
-- [ ] ¿Idioma de la app? La bienvenida está en inglés: ¿toda la app en inglés, en español o en ambos?
-- [ ] “Que les cargue la información en sus teléfonos”: además de guardar la red Wi‑Fi, ¿quieren que se guarde algo más? (ej. la app en la pantalla de inicio, nuestro contacto)
+- [ ] ¿Qué cosas quieren que controlen los invitados? (luces, TV, música, clima, portón…)
+- [ ] ¿Qué dispositivos/sistema tenemos hoy? (Home Assistant, Google Home, Alexa, Apple Home, ninguno)
+- [ ] ¿La red `Cheetah` es WPA2 o WPA3? (se ve en la configuración del router)
+- [ ] ¿Está bien la traducción al español de la bienvenida?
+- [ ] ¿Usamos el código secreto en el link del tag (sección 6)?
 
-**NFC y Wi‑Fi**
-- [ ] ¿Cuántos tags NFC tenemos y de qué modelo? (ej. NTAG213/215/216 — define cuánto cabe)
-- [ ] ¿Dónde irán ubicados?
-- [ ] ¿Tenemos (o podemos crear) una **red de invitados** separada? ¿Es WPA2 o WPA3?
-- [ ] ¿Les parece bien la combinación: tag con link + tag Wi‑Fi para Android + QR de respaldo?
-
-**Spotify**
-- [x] ¿Tenemos Spotify **Premium**? → ✅ Sí
-- [x] ¿Una playlist fija o una por evento? → ✅ Una playlist fija
-- [x] ¿Agregar directo o con aprobación? → ✅ Directo
-- [ ] ¿Evitar canciones duplicadas? ¿Límite de canciones por invitado?
-
-**Plataforma**
-- [ ] ¿Quiénes administran? (¿una persona, la pareja, la familia?)
-- [ ] ¿Presupuesto para hosting/dominio? (¿gratis, bajo costo?)
-
-**Control de la casa**
-- [ ] ¿Qué cosas exactamente quieren que controlen los invitados? (luces, TV, música, clima, portón…)
-- [ ] ¿Qué dispositivos/plataforma tenemos hoy? (Home Assistant, Google Home, Alexa, Apple Home, ninguno)
-
-**Contraseñas e información**
-- [ ] ¿Qué contraseñas se compartirían además del Wi‑Fi?
-- [ ] ¿Qué información de “dónde están las cosas” es la más pedida?
+### ✅ Respondidas
+- Registro: solo nombre, opcional, no obligatorio para ver el Wi‑Fi, sin aprobación.
+- Visitas: de todo tipo (horas o días).
+- Idioma: inglés principal, con opción de español.
+- “Cargar en el teléfono”: solo guardar la red Wi‑Fi.
+- NFC: un solo tag, en la entrada, que abre la app.
+- Wi‑Fi: red `Cheetah`, misma red principal; sin tag Wi‑Fi ni QR de respaldo.
+- Spotify: Premium, playlist fija, directo, sin límites, duplicados da igual.
+- Administración: solo el dueño, editando este repositorio.
+- Presupuesto: gratis.
+- Contraseñas: solo la del Wi‑Fi por ahora.
+- “Dónde están las cosas”: fuera por ahora.
 
 ---
 
-## 12. Hoja de ruta propuesta
+## 11. Hoja de ruta
 
 | Fase | Contenido |
 |---|---|
-| **0 – Definición** | Responder preguntas abiertas. Elegir stack y hosting. |
-| **1 – MVP “Now boarding”** | Web app abierta por tag NFC/QR · Pantalla de bienvenida + reglas · Wi‑Fi (perfil iPhone, tag Android, QR y copiar clave) · Botón a la playlist (respaldo). |
-| **2 – Música y registro** | Buscar y agregar canciones con la API de Spotify · Registro de invitados · Panel para que el anfitrión edite el contenido. |
-| **3 – Guía y contraseñas** | Guía de la casa · Contraseñas solo para invitados aprobados, con vencimiento. |
-| **4 – Control** | Integración smart home con acceso limitado y temporal. |
-| **5 – Extras (opcional)** | Libro de visitas, notificación al anfitrión cuando llega alguien, recomendaciones locales. |
+| **1 – MVP “Now boarding”** | Web app bilingüe (EN/ES) · Bienvenida + reglas · Nombre opcional · Wi‑Fi (perfil iPhone, copiar clave Android) · Grabar el tag NFC. |
+| **2 – Música** | Buscar y agregar canciones a la playlist con la API de Spotify. |
+| **3 – Control** | Cuando se definan dispositivos: control limitado y temporal. |
+| **Más adelante** | Guía de la casa, otras contraseñas, libro de visitas. |
 
-## 13. Stack técnico
+## 12. Stack técnico
 
-**Por decidir.** Requisitos ya claros:
+Requisitos ya claros (la elección concreta queda para el inicio de la Fase 1):
 
-- **Web app** que funcione bien en el teléfono (se abre desde NFC/QR, sin instalar nada).
-- **Backend** necesario para: generar el perfil `.mobileconfig` y el QR de Wi‑Fi, y guardar el token de Spotify del anfitrión y hacer las llamadas a la API.
-- **Panel de administración** para editar textos, reglas y la clave Wi‑Fi.
-- Secretos (clave Wi‑Fi, credenciales de Spotify) cifrados y fuera del repositorio (`.env` / gestor de secretos).
-- **HTTPS** obligatorio (requerido por Safari para perfiles y por Spotify para el login).
+- **Gratis:** hosting con plan gratuito que soporte **funciones de servidor** (serverless) y **HTTPS** (requerido por Safari para perfiles y por Spotify para el login).
+- **Funciones de servidor** necesarias para:
+  1. Generar el perfil `.mobileconfig` con la clave guardada como secreto.
+  2. Guardar el token de Spotify y agregar canciones a la playlist.
+- **Sin base de datos** en la primera versión (el nombre vive en el teléfono del invitado).
+- **Contenido** (textos, reglas, traducciones) en archivos del repositorio, editados por el administrador.
+- **Secretos** (clave Wi‑Fi, credenciales de Spotify) como variables de entorno del hosting, **nunca** en el repositorio.
 
-## 14. Referencias
+## 13. Referencias
 
 - **NFC y Wi‑Fi:** [Apple Community – Wi‑Fi con tag NFC en iPhone](https://discussions.apple.com/thread/251622994), [Dangerous Things – iOS NDEF](https://wiki.dangerousthings.com/en/guides/iOS-NDEF), [Apple – perfiles de configuración](https://support.apple.com/en-is/101360), [Jamf – Wi‑Fi para iOS](https://docs.jamf.com/best-practice-workflows/jamf-pro/configuring-wifi/Configuring_Wi-Fi_for_iOS.html), [Foxpass – clientes iOS](https://docs.foxpass.com/docs/ios-clients)
-- **QR de Wi‑Fi:** [QuickChart – WiFi QR codes](https://quickchart.io/documentation/qr-codes/wifi-qr-codes/), [WPA3 WiFi QR codes are broken](https://stevetech-me.pages.dev/posts/wifi-qr-codes-are-broken)
-- **Spotify:** [Spotify – guía de migración feb 2026](https://developer.spotify.com/documentation/web-api/tutorials/february-2026-migration-guide), [Spotify – changelog jul 2026](https://developer.spotify.com/documentation/web-api/references/changes/july-2026), [Spotify Community – 403 en modo desarrollo](https://community.spotify.com/t5/Spotify-for-Developers/Web-API-playlist-creation-returns-403-in-Development-Mode-no/td-p/7482480), [TechCrunch – Spotify Jam](https://techcrunch.com/2023/09/26/spotify-launches-jam-a-real-time-collaborative-playlist-controlled-by-up-to-32-people), [Spotify Community – Jam y Web API](https://community.spotify.com/t5/Spotify-for-Developers/Web-API-info-for-Jams/m-p/7109118/highlight/true)
+- **Spotify:** [Spotify – guía de migración feb 2026](https://developer.spotify.com/documentation/web-api/tutorials/february-2026-migration-guide), [Spotify – changelog jul 2026](https://developer.spotify.com/documentation/web-api/references/changes/july-2026), [Spotify Community – 403 en modo desarrollo](https://community.spotify.com/t5/Spotify-for-Developers/Web-API-playlist-creation-returns-403-in-Development-Mode-no/td-p/7482480), [TechCrunch – Spotify Jam](https://techcrunch.com/2023/09/26/spotify-launches-jam-a-real-time-collaborative-playlist-controlled-by-up-to-32-people)
 - **Guías para invitados:** [Chekin](https://chekin.com/en/blog/how-digital-guidebooks-transform-the-guest-experience/), [Touch Stay](https://touchstay.com/blog/vacation-rental-welcome-book), [Minut](https://minut.com/blog/vacation-rental-welcome-book)
 - **Smart home para invitados:** [Home Assistant – Guest dashboards](https://community.home-assistant.io/t/guest-dashboards/659023), [Android Authority – Google Home guest access](https://www.androidauthority.com/google-home-guest-access-smart-home-3656804/)
