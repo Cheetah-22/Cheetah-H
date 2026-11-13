@@ -95,3 +95,6 @@ h2 { font-size: 18px; margin: 0 0 12px; }
 .results .title, .results .artist { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .results .artist { color: var(--muted); font-size: 14px; }
 .results .btn { padding: 8px 12px; background: var(--spot); color: #fff; flex: none; }
+.subhead { font-size: 15px; margin: 18px 0 0; color: var(--muted); }
+.recent li { padding: 6px 0; }
+.recent img { width: 36px; height: 36px; }

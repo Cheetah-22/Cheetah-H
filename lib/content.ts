@@ -1,11 +1,10 @@
 // ✏️ Contenido de la app — edita este archivo para cambiar textos, reglas, Wi‑Fi o playlist.
-// Content of the app — edit this file to change texts, rules, Wi‑Fi or playlist.
+// Si cambias la clave Wi‑Fi, actualízala también en public/wifi.mobileconfig (perfil para iPhone).
 
-window.CONTENT = {
+export const CONTENT = {
   wifi: {
     ssid: "Cheetah",
     password: "Iwantchocolate!",
-    // Si cambias la clave, actualiza también wifi.mobileconfig (el perfil para iPhone).
   },
 
   // Link público de la playlist (botón "Abrir en Spotify").
@@ -17,7 +16,7 @@ window.CONTENT = {
     welcome: "Welcome to our home! 🏠",
     thrilled: "We're thrilled to have you.",
     namePlaceholder: "Your name (optional)",
-    hello: (n) => `Welcome aboard, ${n}! ✈️`,
+    hello: (n: string) => `Welcome aboard, ${n}! ✈️`,
     rulesTitle: "House rules",
     rules: [
       "👟 Shoes off, vibes on",
@@ -41,6 +40,8 @@ window.CONTENT = {
     noResults: "No songs found.",
     error: "Something went wrong. Try again or open the playlist in Spotify.",
     openSpotify: "Open playlist in Spotify",
+    recentTitle: "Recently added",
+    by: (n: string) => `by ${n}`,
   },
 
   es: {
@@ -49,7 +50,7 @@ window.CONTENT = {
     welcome: "¡Bienvenidos a nuestra casa! 🏠",
     thrilled: "Nos encanta tenerlos aquí.",
     namePlaceholder: "Tu nombre (opcional)",
-    hello: (n) => `¡Bienvenido a bordo, ${n}! ✈️`,
+    hello: (n: string) => `¡Bienvenido a bordo, ${n}! ✈️`,
     rulesTitle: "Reglas de la casa",
     rules: [
       "👟 Fuera zapatos, arriba la buena onda",
@@ -73,5 +74,9 @@ window.CONTENT = {
     noResults: "No se encontraron canciones.",
     error: "Algo salió mal. Intenta de nuevo o abre la playlist en Spotify.",
     openSpotify: "Abrir playlist en Spotify",
+    recentTitle: "Agregadas recientemente",
+    by: (n: string) => `por ${n}`,
   },
 };
+
+export type Lang = "en" | "es";

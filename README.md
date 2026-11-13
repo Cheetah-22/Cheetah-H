@@ -112,6 +112,7 @@ Detalles a tener en cuenta:
 - ✅ **Una playlist fija** de la casa.
 - ✅ Las canciones **entran directo**, sin aprobación.
 - ✅ **Sin límite** de canciones por invitado; los duplicados dan igual.
+- ✅ La app muestra las **últimas canciones agregadas** y quién las agregó (“by Ana”), guardadas en Supabase (tabla `songs`).
 
 **Cómo funciona:**
 - Solo **nuestra cuenta** se conecta a Spotify. El invitado busca una canción en la app y nuestro servidor la agrega a la playlist con nuestra cuenta. El invitado **no necesita** tener Spotify.
@@ -123,7 +124,7 @@ Detalles a tener en cuenta:
 ## 8. Nombre del invitado
 
 - ✅ Solo **nombre**, **opcional**. No hay aprobación ni cuentas.
-- 💡 El nombre se puede guardar en el propio teléfono del invitado (navegador), sin base de datos, y usarse para saludarlo (“Welcome, Ana!”) y para firmar sus canciones.
+- ✅ El nombre se guarda en el teléfono del invitado y en Supabase (tabla `guests`). Se usa para saludarlo (“Welcome aboard, Ana!”) y para mostrar quién agregó cada canción.
 
 ## 9. Control de la casa (pendiente)
 
@@ -152,6 +153,7 @@ Todavía no definido. Notas de la investigación:
 - Spotify: Premium, playlist fija, directo, sin límites, duplicados da igual.
 - Administración: solo el dueño, editando este repositorio.
 - Presupuesto: gratis.
+- Stack: Next.js + Supabase + Vercel + GitHub.
 - Contraseñas: solo la del Wi‑Fi por ahora.
 - “Dónde están las cosas”: fuera por ahora.
 
@@ -161,62 +163,75 @@ Todavía no definido. Notas de la investigación:
 
 | Fase | Contenido |
 |---|---|
-| **1 – MVP “Now boarding”** | Web app bilingüe (EN/ES) · Bienvenida + reglas · Nombre opcional · Wi‑Fi (perfil iPhone, copiar clave Android) · Agregar canciones a la playlist de Spotify · Grabar el tag NFC. |
+| **1 – MVP “Now boarding”** ✅ construido | Web app Next.js bilingüe (EN/ES) · Bienvenida + reglas · Nombre opcional · Wi‑Fi (perfil iPhone, copiar clave Android) · Agregar canciones a la playlist de Spotify · Grabar el tag NFC. |
 | **2 – Control** | Cuando se definan dispositivos: control limitado y temporal. |
 | **Más adelante** | Guía de la casa, otras contraseñas, libro de visitas. |
 
-## 12. Stack técnico
+## 12. ✅ Stack técnico
 
-Requisitos ya claros (la elección concreta queda para el inicio de la Fase 1):
+| Pieza | Herramienta | Uso |
+|---|---|---|
+| UI | **Next.js** (App Router, TypeScript) | La app que ve el invitado + rutas de servidor (`app/api/*`). |
+| Backend / datos | **Supabase** (Postgres) | Invitados, canciones agregadas y el token de Spotify del anfitrión. |
+| Deploy | **Vercel** (plan gratis Hobby) | Publica la app con HTTPS y corre las rutas de servidor. |
+| Control de versiones | **GitHub** — [Cheetah-22/Cheetah-H](https://github.com/Cheetah-22/Cheetah-H) | Cada push a la rama principal publica automáticamente en Vercel. |
+| Música | **Spotify Web API** | Buscar canciones y agregarlas a la playlist con la cuenta del anfitrión. |
 
-- **Gratis:** hosting con plan gratuito que soporte **funciones de servidor** (serverless) y **HTTPS** (requerido por Safari para perfiles y por Spotify para el login).
-- **Funciones de servidor** necesarias para:
-  1. Generar el perfil `.mobileconfig` del Wi‑Fi.
-  2. Guardar el token de Spotify y agregar canciones a la playlist.
-- **Sin base de datos** en la primera versión (el nombre vive en el teléfono del invitado).
-- **Contenido** (textos, reglas, traducciones) en archivos del repositorio, editados por el administrador.
-- **Secretos de Spotify** (client secret, token) como variables de entorno del hosting, **nunca** en el repositorio: con ellos alguien podría controlar la cuenta de Spotify. (La clave Wi‑Fi sí puede ir en el repositorio, por decisión del dueño.)
+Seguridad:
+- La app habla con Supabase **solo desde el servidor** con la *service role key* (nunca llega al navegador).
+- Las tablas tienen **RLS activado sin políticas**: nadie puede leerlas ni escribirlas directamente desde internet.
+- El token de Spotify se guarda en Supabase (tabla `settings`), no en el código.
 
 ## 13. Puesta en marcha
 
 ### Estructura del proyecto
 
-| Archivo | Para qué sirve |
+| Archivo / carpeta | Para qué sirve |
 |---|---|
-| `index.html`, `styles.css`, `app.js` | La app que ve el invitado. |
-| `content.js` | ✏️ **Todo el contenido editable**: textos EN/ES, reglas, Wi‑Fi y link de la playlist. |
-| `wifi.mobileconfig` | Perfil Wi‑Fi para iPhone (red `Cheetah`, WPA2). Si cambia la clave, actualizarla aquí y en `content.js`. |
-| `api/search.js`, `api/add.js` | Funciones de servidor: buscar canciones y agregarlas a la playlist. |
-| `api/login.js`, `api/callback.js` | Paso único para conectar tu cuenta de Spotify. |
-| `vercel.json` | Hace que el iPhone reconozca el perfil Wi‑Fi al descargarlo. |
-| `test/` | Pruebas de las funciones de Spotify (`npm test`). |
+| `lib/content.ts` | ✏️ **Todo el contenido editable**: textos EN/ES, reglas, Wi‑Fi y link de la playlist. |
+| `components/Home.tsx` | La pantalla del invitado (bienvenida, Wi‑Fi, playlist). |
+| `app/globals.css` | Estilos (tema tarjeta de embarque). |
+| `public/wifi.mobileconfig` | Perfil Wi‑Fi para iPhone (red `Cheetah`, WPA2). Si cambia la clave, actualizarla aquí y en `lib/content.ts`. |
+| `app/api/search`, `app/api/add` | Buscar canciones y agregarlas a la playlist (y registrar quién la agregó). |
+| `app/api/songs` | Últimas canciones agregadas. |
+| `app/api/guests` | Guarda el nombre opcional del invitado. |
+| `app/api/spotify/login`, `.../callback` | Paso único para conectar tu cuenta de Spotify. |
+| `lib/spotify.ts`, `lib/supabase.ts` | Conexión con Spotify y Supabase (solo servidor). |
+| `supabase/migrations/0001_init.sql` | Tablas de la base de datos. |
+| `test/` | Pruebas (`npm test`). |
 
-**Hosting elegido:** [Vercel](https://vercel.com), plan gratuito (Hobby): sirve la app con HTTPS y corre las funciones de servidor.
+### Desarrollo local
+
+```bash
+npm install
+cp .env.example .env.local   # completar con tus claves
+npm run dev                  # http://localhost:3000
+npm test
+```
 
 ### Pasos (una sola vez)
 
-1. **Publicar en Vercel**
-   - Crear una cuenta gratis en vercel.com entrando con GitHub.
-   - *Add New → Project* → elegir el repositorio `Cheetah-H` → *Deploy*.
-   - Anotar la dirección que te da (ej. `https://cheetah-h.vercel.app`).
-2. **Crear la app de Spotify**
+1. **Supabase**
+   - Crear un proyecto gratis en [supabase.com](https://supabase.com).
+   - *SQL Editor → New query* → pegar el contenido de `supabase/migrations/0001_init.sql` → *Run*.
+   - En *Project Settings → API* copiar la **Project URL** y la **service_role key** (o *secret key*).
+2. **Spotify**
    - Entrar a [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard) con tu cuenta Premium → *Create app*.
-   - En **Redirect URI** poner: `https://<tu-dirección>/api/callback`.
-   - Marcar **Web API** y guardar. Copiar el **Client ID** y el **Client Secret**.
-3. **Elegir la playlist**
-   - En Spotify, abrir la playlist → *Compartir → Copiar enlace*. Ej: `https://open.spotify.com/playlist/ABC123?si=...`
-   - El **ID** es la parte entre `playlist/` y `?` (ej. `ABC123`).
-   - Pegar el enlace completo en `playlistUrl` dentro de `content.js`.
-4. **Variables secretas en Vercel** (*Project → Settings → Environment Variables*):
-   - `SPOTIFY_CLIENT_ID` = Client ID
-   - `SPOTIFY_CLIENT_SECRET` = Client Secret
-   - `SPOTIFY_PLAYLIST_ID` = ID de la playlist
-   - Luego *Deployments → Redeploy*.
-5. **Conectar tu cuenta de Spotify**
-   - Abrir `https://<tu-dirección>/api/login`, iniciar sesión y aceptar.
-   - La página muestra un código largo: guardarlo como variable `SPOTIFY_REFRESH_TOKEN` en Vercel y hacer *Redeploy* otra vez.
-   - Desde ese momento `/api/login` queda desactivado.
-6. **Probar**: abrir la app, buscar una canción, tocar *Add* y revisar que aparezca en la playlist.
+   - Marcar **Web API**. La Redirect URI se completa en el paso 5.
+   - Copiar el **Client ID** y el **Client Secret**.
+   - En Spotify, abrir la playlist → *Compartir → Copiar enlace* (ej. `https://open.spotify.com/playlist/ABC123?si=...`). El **ID** es lo que va entre `playlist/` y `?`. Pegar el enlace completo en `playlistUrl` dentro de `lib/content.ts`.
+3. **Vercel**
+   - Crear cuenta gratis en [vercel.com](https://vercel.com) entrando con GitHub.
+   - *Add New → Project* → elegir `Cheetah-22/Cheetah-H` (Vercel detecta Next.js solo).
+   - En *Environment Variables* agregar:
+     - `SUPABASE_URL` = Project URL
+     - `SUPABASE_SERVICE_ROLE_KEY` = service_role / secret key
+     - `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET` = de Spotify
+     - `SPOTIFY_PLAYLIST_ID` = ID de la playlist
+   - *Deploy* y anotar la dirección (ej. `https://cheetah-h.vercel.app`).
+4. **Redirect URI en Spotify**: en la app de Spotify → *Settings* → Redirect URIs → `https://<tu-dirección>/api/spotify/callback` → guardar.
+5. **Conectar tu cuenta de Spotify**: abrir `https://<tu-dirección>/api/spotify/login`, iniciar sesión y aceptar. Debe aparecer “✅ Spotify connected”. El token queda guardado en Supabase y la ruta se desactiva sola.
+6. **Probar**: abrir la app, buscar una canción, tocar *Add* y revisar que aparezca en la playlist y en “Recently added”.
 7. **Grabar el tag NFC**
    - Instalar una app como **NFC Tools** (iPhone o Android).
    - *Write → Add a record → URL* → tu dirección de Vercel → *Write* y acercar el tag.
@@ -224,9 +239,10 @@ Requisitos ya claros (la elección concreta queda para el inicio de la Fase 1):
 8. Pegar el tag en la entrada de la casa. ✈️
 
 ### Notas
-- La app funciona sin Spotify configurado: el Wi‑Fi y la bienvenida no dependen de él.
-- Si Spotify responde con error, los detalles aparecen en Vercel → *Logs*. Revisar que la cuenta sea Premium, que la Redirect URI sea exacta y que el refresh token esté guardado.
-- Para cambiar textos o reglas: editar `content.js` (o pedírselo a Claude Code); Vercel publica automáticamente cada cambio.
+- El Wi‑Fi y la bienvenida funcionan aunque Spotify o Supabase no estén configurados.
+- Si Spotify da error, los detalles aparecen en Vercel → *Logs*. Revisar que la cuenta sea Premium, que la Redirect URI sea exacta y que exista la fila `spotify_refresh_token` en la tabla `settings`.
+- Para reconectar Spotify: borrar esa fila en Supabase (*Table Editor → settings*) y volver al paso 5.
+- Para cambiar textos o reglas: editar `lib/content.ts` (o pedírselo a Claude Code); Vercel publica cada cambio automáticamente.
 
 ## 14. Referencias
 
