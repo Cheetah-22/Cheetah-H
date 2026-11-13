@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1b1a17">
+  <title>Cheetahs House</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐆</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <span class="brand">🐆 Cheetahs House</span>
+      <button id="lang" class="lang" type="button" aria-label="Change language">ES</button>
+    </header>
+
+    <!-- Boarding pass -->
+    <section class="pass">
+      <div class="pass-head">
+        <span class="badge" data-t="boarding"></span>
+        <span class="plane">✈️</span>
+      </div>
+      <h1 data-t="welcome"></h1>
+      <p class="muted" data-t="thrilled"></p>
+      <p id="hello" class="hello" hidden></p>
+      <input id="name" class="input" type="text" autocomplete="given-name" maxlength="40">
+      <div class="perf" aria-hidden="true"></div>
+      <h2 data-t="rulesTitle"></h2>
+      <ul id="rules" class="rules"></ul>
+    </section>
+
+    <!-- Wi‑Fi -->
+    <section class="card" id="wifi">
+      <h2>📶 <span data-t="wifiTitle"></span></h2>
+      <div class="row"><span class="label" data-t="network"></span><strong id="ssid"></strong></div>
+      <div class="row"><span class="label" data-t="password"></span><strong id="pwd" class="mono"></strong></div>
+
+      <div id="ios" class="os">
+        <a class="btn primary" href="wifi.mobileconfig" data-t="connectIphone"></a>
+        <p class="help" data-t="iphoneHelp"></p>
+      </div>
+      <div id="android" class="os">
+        <button id="copy" class="btn primary" type="button" data-t="copy"></button>
+        <p class="help" data-t="androidHelp"></p>
+      </div>
+    </section>
+
+    <!-- Spotify -->
+    <section class="card" id="music">
+      <h2>🎶 <span data-t="musicTitle"></span></h2>
+      <form id="search" class="search">
+        <input id="q" class="input" type="search" required>
+        <button class="btn" type="submit" data-t="search"></button>
+      </form>
+      <p id="status" class="help" hidden></p>
+      <ul id="results" class="results"></ul>
+      <a id="open" class="btn ghost" target="_blank" rel="noopener" data-t="openSpotify"></a>
+    </section>
+  </main>
+
+  <script src="content.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 
 Web app para que los invitados que visitan nuestra casa tengan en un solo lugar todo lo que necesitan para **conectarse** y **sentirse en casa**, sin tener que preguntarnos cada vez.
 
-> **Estado:** definición casi lista para construir la primera versión. Este README separa lo que ya está decidido (✅) de lo que todavía falta decidir. Las secciones marcadas con 💡 son ideas sacadas de investigación online, **no** decisiones tomadas.
+> **Estado:** ✅ primera versión construida (bienvenida, Wi‑Fi y Spotify). Falta publicarla y grabar el tag NFC — ver **“Puesta en marcha”** al final. Este README separa lo que ya está decidido (✅) de lo que todavía falta decidir. Las secciones marcadas con 💡 son ideas sacadas de investigación online, **no** decisiones tomadas.
 
 ---
 
@@ -112,7 +112,6 @@ Detalles a tener en cuenta:
 - ✅ **Una playlist fija** de la casa.
 - ✅ Las canciones **entran directo**, sin aprobación.
 - ✅ **Sin límite** de canciones por invitado; los duplicados dan igual.
-- ✅ Si el invitado escribió su nombre, se puede mostrar quién agregó cada canción (“🎶 added by Ana”).
 
 **Cómo funciona:**
 - Solo **nuestra cuenta** se conecta a Spotify. El invitado busca una canción en la app y nuestro servidor la agrega a la playlist con nuestra cuenta. El invitado **no necesita** tener Spotify.
@@ -178,7 +177,58 @@ Requisitos ya claros (la elección concreta queda para el inicio de la Fase 1):
 - **Contenido** (textos, reglas, traducciones) en archivos del repositorio, editados por el administrador.
 - **Secretos de Spotify** (client secret, token) como variables de entorno del hosting, **nunca** en el repositorio: con ellos alguien podría controlar la cuenta de Spotify. (La clave Wi‑Fi sí puede ir en el repositorio, por decisión del dueño.)
 
-## 13. Referencias
+## 13. Puesta en marcha
+
+### Estructura del proyecto
+
+| Archivo | Para qué sirve |
+|---|---|
+| `index.html`, `styles.css`, `app.js` | La app que ve el invitado. |
+| `content.js` | ✏️ **Todo el contenido editable**: textos EN/ES, reglas, Wi‑Fi y link de la playlist. |
+| `wifi.mobileconfig` | Perfil Wi‑Fi para iPhone (red `Cheetah`, WPA2). Si cambia la clave, actualizarla aquí y en `content.js`. |
+| `api/search.js`, `api/add.js` | Funciones de servidor: buscar canciones y agregarlas a la playlist. |
+| `api/login.js`, `api/callback.js` | Paso único para conectar tu cuenta de Spotify. |
+| `vercel.json` | Hace que el iPhone reconozca el perfil Wi‑Fi al descargarlo. |
+| `test/` | Pruebas de las funciones de Spotify (`npm test`). |
+
+**Hosting elegido:** [Vercel](https://vercel.com), plan gratuito (Hobby): sirve la app con HTTPS y corre las funciones de servidor.
+
+### Pasos (una sola vez)
+
+1. **Publicar en Vercel**
+   - Crear una cuenta gratis en vercel.com entrando con GitHub.
+   - *Add New → Project* → elegir el repositorio `Cheetah-H` → *Deploy*.
+   - Anotar la dirección que te da (ej. `https://cheetah-h.vercel.app`).
+2. **Crear la app de Spotify**
+   - Entrar a [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard) con tu cuenta Premium → *Create app*.
+   - En **Redirect URI** poner: `https://<tu-dirección>/api/callback`.
+   - Marcar **Web API** y guardar. Copiar el **Client ID** y el **Client Secret**.
+3. **Elegir la playlist**
+   - En Spotify, abrir la playlist → *Compartir → Copiar enlace*. Ej: `https://open.spotify.com/playlist/ABC123?si=...`
+   - El **ID** es la parte entre `playlist/` y `?` (ej. `ABC123`).
+   - Pegar el enlace completo en `playlistUrl` dentro de `content.js`.
+4. **Variables secretas en Vercel** (*Project → Settings → Environment Variables*):
+   - `SPOTIFY_CLIENT_ID` = Client ID
+   - `SPOTIFY_CLIENT_SECRET` = Client Secret
+   - `SPOTIFY_PLAYLIST_ID` = ID de la playlist
+   - Luego *Deployments → Redeploy*.
+5. **Conectar tu cuenta de Spotify**
+   - Abrir `https://<tu-dirección>/api/login`, iniciar sesión y aceptar.
+   - La página muestra un código largo: guardarlo como variable `SPOTIFY_REFRESH_TOKEN` en Vercel y hacer *Redeploy* otra vez.
+   - Desde ese momento `/api/login` queda desactivado.
+6. **Probar**: abrir la app, buscar una canción, tocar *Add* y revisar que aparezca en la playlist.
+7. **Grabar el tag NFC**
+   - Instalar una app como **NFC Tools** (iPhone o Android).
+   - *Write → Add a record → URL* → tu dirección de Vercel → *Write* y acercar el tag.
+   - Probar con un iPhone y un Android. Si funciona, bloquear el tag (*Other → Lock tag*). ⚠️ El bloqueo es permanente.
+8. Pegar el tag en la entrada de la casa. ✈️
+
+### Notas
+- La app funciona sin Spotify configurado: el Wi‑Fi y la bienvenida no dependen de él.
+- Si Spotify responde con error, los detalles aparecen en Vercel → *Logs*. Revisar que la cuenta sea Premium, que la Redirect URI sea exacta y que el refresh token esté guardado.
+- Para cambiar textos o reglas: editar `content.js` (o pedírselo a Claude Code); Vercel publica automáticamente cada cambio.
+
+## 14. Referencias
 
 - **NFC y Wi‑Fi:** [Apple Community – Wi‑Fi con tag NFC en iPhone](https://discussions.apple.com/thread/251622994), [Dangerous Things – iOS NDEF](https://wiki.dangerousthings.com/en/guides/iOS-NDEF), [Apple – perfiles de configuración](https://support.apple.com/en-is/101360), [Jamf – Wi‑Fi para iOS](https://docs.jamf.com/best-practice-workflows/jamf-pro/configuring-wifi/Configuring_Wi-Fi_for_iOS.html), [Foxpass – clientes iOS](https://docs.foxpass.com/docs/ios-clients)
 - **Spotify:** [Spotify – guía de migración feb 2026](https://developer.spotify.com/documentation/web-api/tutorials/february-2026-migration-guide), [Spotify – changelog jul 2026](https://developer.spotify.com/documentation/web-api/references/changes/july-2026), [Spotify Community – 403 en modo desarrollo](https://community.spotify.com/t5/Spotify-for-Developers/Web-API-playlist-creation-returns-403-in-Development-Mode-no/td-p/7482480), [TechCrunch – Spotify Jam](https://techcrunch.com/2023/09/26/spotify-launches-jam-a-real-time-collaborative-playlist-controlled-by-up-to-32-people)
