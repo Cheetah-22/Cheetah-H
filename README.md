@@ -30,7 +30,7 @@ Responder esto una y otra vez interrumpe y la información se termina repitiendo
 2. **Bienvenida “Now boarding” + reglas de la casa** (sección 4).
 3. **Nombre opcional** – el invitado puede escribir su nombre; no es obligatorio y no bloquea nada.
 4. **Wi‑Fi** – conectarse y dejar la red guardada en el teléfono.
-5. **Spotify** – agregar canciones a la playlist de la casa.
+5. **Spotify** – agregar canciones a la playlist de la casa (✅ parte de la primera versión).
 6. **Idiomas** – inglés por defecto, con opción de cambiar a español.
 
 ### ⏸️ Fuera por ahora
@@ -82,9 +82,15 @@ La versión en español se tiene que traducir. 💡 Propuesta (para revisar):
 
 ## 6. ✅ Wi‑Fi
 
-- **Red:** `Cheetah` (la red principal de la casa; no hay red de invitados separada).
-- **Clave:** ⚠️ **no se escribe en este repositorio** (ver “Seguridad” abajo). Se guarda como variable secreta en el hosting.
-- **No se pide registro** para ver el Wi‑Fi.
+Lo que verá el invitado en la app:
+
+> 📶 **WiFi:** `Cheetah`
+>
+> 🔑 **Password:** `Iwantchocolate!`
+
+- ✅ Prioridad: que el invitado se conecte de la forma **más rápida y simple posible**.
+- ✅ La clave se muestra **abierta**, sin registro ni códigos. El dueño de la casa decidió que no le importa que la clave sea visible (incluso en este repositorio público).
+- La red es la red principal de la casa (no hay red de invitados separada).
 
 **Cómo se conecta el invitado desde la app** (no existe una forma estándar de que un link conecte al Wi‑Fi, así que depende del teléfono):
 
@@ -97,12 +103,7 @@ Detalles a tener en cuenta:
 - La app detecta si es iPhone o Android y muestra la opción que corresponde.
 - Un perfil `.mobileconfig` sin firma digital muestra el aviso “No verificado”. Se puede firmar para que se vea más confiable.
 - En iOS 16 o más nuevo, el perfil funciona con redes WPA2/WPA3, no con WPA (el más antiguo). *Confirmar el tipo de seguridad de la red `Cheetah`.*
-- Si se cambia la clave, solo se actualiza la variable secreta; la app genera el perfil con la clave nueva.
-
-### ⚠️ Seguridad de la clave
-- Este repositorio es **público**: cualquiera en internet puede leerlo. Por eso la clave **no** va en el README ni en el código.
-- La app tampoco tiene registro obligatorio: **cualquier persona que acceda al link** puede ver la clave. 💡 Para reducir el riesgo, el link puede incluir un código secreto que solo está grabado en el tag (ej. `…/?k=<código>`), de modo que la clave solo se muestre a quien escaneó el tag en la casa.
-- 💡 Como la red de invitados es la misma red principal, a futuro conviene evaluar una red de invitados separada.
+- Si se cambia la clave, se actualiza en el contenido de la app y el perfil se genera con la clave nueva.
 
 ## 7. ✅ Agregar canciones a Spotify
 
@@ -140,7 +141,6 @@ Todavía no definido. Notas de la investigación:
 - [ ] ¿Qué dispositivos/sistema tenemos hoy? (Home Assistant, Google Home, Alexa, Apple Home, ninguno)
 - [ ] ¿La red `Cheetah` es WPA2 o WPA3? (se ve en la configuración del router)
 - [ ] ¿Está bien la traducción al español de la bienvenida?
-- [ ] ¿Usamos el código secreto en el link del tag (sección 6)?
 
 ### ✅ Respondidas
 - Registro: solo nombre, opcional, no obligatorio para ver el Wi‑Fi, sin aprobación.
@@ -148,7 +148,8 @@ Todavía no definido. Notas de la investigación:
 - Idioma: inglés principal, con opción de español.
 - “Cargar en el teléfono”: solo guardar la red Wi‑Fi.
 - NFC: un solo tag, en la entrada, que abre la app.
-- Wi‑Fi: red `Cheetah`, misma red principal; sin tag Wi‑Fi ni QR de respaldo.
+- Wi‑Fi: red `Cheetah`, misma red principal; sin tag Wi‑Fi ni QR de respaldo; clave visible para todos, sin código secreto.
+- Prioridad: conexión lo más rápida y simple posible; Wi‑Fi y Spotify en la primera versión.
 - Spotify: Premium, playlist fija, directo, sin límites, duplicados da igual.
 - Administración: solo el dueño, editando este repositorio.
 - Presupuesto: gratis.
@@ -161,9 +162,8 @@ Todavía no definido. Notas de la investigación:
 
 | Fase | Contenido |
 |---|---|
-| **1 – MVP “Now boarding”** | Web app bilingüe (EN/ES) · Bienvenida + reglas · Nombre opcional · Wi‑Fi (perfil iPhone, copiar clave Android) · Grabar el tag NFC. |
-| **2 – Música** | Buscar y agregar canciones a la playlist con la API de Spotify. |
-| **3 – Control** | Cuando se definan dispositivos: control limitado y temporal. |
+| **1 – MVP “Now boarding”** | Web app bilingüe (EN/ES) · Bienvenida + reglas · Nombre opcional · Wi‑Fi (perfil iPhone, copiar clave Android) · Agregar canciones a la playlist de Spotify · Grabar el tag NFC. |
+| **2 – Control** | Cuando se definan dispositivos: control limitado y temporal. |
 | **Más adelante** | Guía de la casa, otras contraseñas, libro de visitas. |
 
 ## 12. Stack técnico
@@ -172,11 +172,11 @@ Requisitos ya claros (la elección concreta queda para el inicio de la Fase 1):
 
 - **Gratis:** hosting con plan gratuito que soporte **funciones de servidor** (serverless) y **HTTPS** (requerido por Safari para perfiles y por Spotify para el login).
 - **Funciones de servidor** necesarias para:
-  1. Generar el perfil `.mobileconfig` con la clave guardada como secreto.
+  1. Generar el perfil `.mobileconfig` del Wi‑Fi.
   2. Guardar el token de Spotify y agregar canciones a la playlist.
 - **Sin base de datos** en la primera versión (el nombre vive en el teléfono del invitado).
 - **Contenido** (textos, reglas, traducciones) en archivos del repositorio, editados por el administrador.
-- **Secretos** (clave Wi‑Fi, credenciales de Spotify) como variables de entorno del hosting, **nunca** en el repositorio.
+- **Secretos de Spotify** (client secret, token) como variables de entorno del hosting, **nunca** en el repositorio: con ellos alguien podría controlar la cuenta de Spotify. (La clave Wi‑Fi sí puede ir en el repositorio, por decisión del dueño.)
 
 ## 13. Referencias
 
