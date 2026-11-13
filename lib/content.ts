@@ -8,7 +8,7 @@ export const CONTENT = {
   },
 
   // Link público de la playlist (botón "Abrir en Spotify").
-  playlistUrl: "https://open.spotify.com/playlist/REEMPLAZAR_CON_TU_PLAYLIST",
+  playlistUrl: "https://open.spotify.com/playlist/3sxX9icP8ZiFixqN1ElxlO",
 
   en: {
     lang: "EN",
