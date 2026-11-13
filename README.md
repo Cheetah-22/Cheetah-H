@@ -1,5 +1,7 @@
 # 🐆 Cheetahs House
 
+🌐 **App:** https://cheetah-h.vercel.app
+
 Web app para que los invitados que visitan nuestra casa tengan en un solo lugar todo lo que necesitan para **conectarse** y **sentirse en casa**, sin tener que preguntarnos cada vez.
 
 > **Estado:** ✅ primera versión construida (bienvenida, Wi‑Fi y Spotify). Falta publicarla y grabar el tag NFC — ver **“Puesta en marcha”** al final. Este README separa lo que ya está decidido (✅) de lo que todavía falta decidir. Las secciones marcadas con 💡 son ideas sacadas de investigación online, **no** decisiones tomadas.
